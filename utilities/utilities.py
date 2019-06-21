@@ -8,6 +8,44 @@ import pandas as pd
 import pickle
 
 
+def generate_test_results(X_test, y_test, model):
+	'''Joins X_test, y_test, y_pred and confusion results.'''
+	results = X_test.join(y_test.rename('label_true'))
+
+	# Predict bool classification
+	y_pred = model.predict(X_test)
+	y_pred = pd.DataFrame(y_pred, 
+						index=X_test.index, 
+						columns=['label_pred'])
+
+	# Probability for each testing classification
+	probs = model.predict_proba(X_test)[:,1]
+	probs = pd.DataFrame(probs, 
+						index=X_test.index, 
+						columns=['label_prob'])
+
+	results = results.join(y_pred)
+	results = results.join(probs)
+	
+	return results
+
+
+def scale_split_data(X, y):
+	'''Scale and split the data. Return split data'''
+
+	# Scale X-data between -1 and 1
+	scaler = StandardScaler().fit(X)                                    
+	X_scaled = pd.DataFrame(scaler.transform(X), 
+							index=X.index, 
+                        	columns=X.columns)
+
+	# Split data into training and testing
+	X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, random_state=0)
+
+	return X_train, X_test, y_train, y_test
+
+
+
 def logreg_model(X, y):
 	'''Performs redundant logistic regression modelling'''
 
@@ -28,13 +66,14 @@ def logreg_model(X, y):
 
 
 def classify_outliers(train_df):
-	''' '''
+	'''Identifies House_IDs to be considered outliers'''
 	# Summary stats for each training sample
 	stats = pd.DataFrame(index=train_df.index)
-	stats['sum'] = pd.DataFrame(train_df.sum(axis=1))
-	stats['min'] = pd.DataFrame(train_df.min(axis=1))
 	stats['max'] = pd.DataFrame(train_df.max(axis=1))
-	stats['avg'] = pd.DataFrame(train_df.mean(axis=1))
+	# NOTE: Reserving these for future use in outlier classification
+	# stats['sum'] = pd.DataFrame(train_df.sum(axis=1))
+	# stats['min'] = pd.DataFrame(train_df.min(axis=1))
+	# stats['avg'] = pd.DataFrame(train_df.mean(axis=1))
 
 	# Use stats to classify outliers
 	std = stats['max'].std()
@@ -50,7 +89,7 @@ def classify_outliers(train_df):
 
 
 def pickle_raw_data():
-	''' '''
+	'''Pickles raw EV_files data as Pandas dataframes.'''
 	# Path Setup
 	data_path = Path('/Users/andreakeane/Documents/DataScience/GridCure_Problems/EV_files/')
 	pickle_path = Path('/Users/andreakeane/Documents/DataScience/GridCure_Problems/pickles/')
@@ -72,7 +111,7 @@ def pickle_raw_data():
 
 def make_pickle(cucumber, pickle_jar):
 	'''
-	Pickles non-Pandas obejcts.
+	Pickles non-Pandas objects.
 	cucumber - object to be pickled
 	pickle_jar - filepath to save the pickle to
 	'''
