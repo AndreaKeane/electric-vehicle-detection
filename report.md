@@ -1,7 +1,6 @@
 
 # Abstract
 
-
 # Introduction
 
 ### Background
@@ -29,26 +28,34 @@ A solution to part B might consist of a prediction of the probability that an el
 
 ### Data Profiling  
 
-The training data contains 60 days of power readings for 1590 houses. Of the 1590 houses, 30.5% or 485 houses, charged an EV at least once during the 60-day window.  
+The training data contains 60 days of power readings for 1590 houses. Of the 1590 houses, 30.5% or 485 houses, charged an EV during at least one interval in the time period. 
 
-The training data has an imbalanced distribution between classes. After removing outliers, 2.4% of all power readings occurred during EV charging. This increased to 7.7% when only considering the power readings from households with EVs. In both cases, the proportion of EV charging events is significantly lower that the non-EV charging events. This imbalance likely mimics realistic data. Therefore, the model's bias may not be concerning. The imbalance could be reduced or eliminated by removing power readings from the non-EV class. I chose not to balance the data because (1) I wanted the training data to mimic a realistic data distribution and (2) it would significantly reducing the size of the training data set. 
+The training data has an imbalanced class distribution. After removing outliers, 2.4% of all power readings occurred during EV charging. This increased to 7.7% when only considering the power readings from households with EVs. In both cases, the proportion of EV charging events is significantly lower that the non-EV charging events. The imbalance could be reduced or eliminated by removing power readings from the non-EV class. I chose not to balance the data because (1) I wanted the training data to mimic a realistic data distribution and (2) it would significantly reducing the size of the training data set. As a result, the models developed are biased towards non-EV charging events. 
 
 TODO: Insert figure summarizing imbalanced data
 
-![Total Charges](/figures/dist_total_charges.png)
+![Total Charges](figures/dist_total_charges.png)
 ![Distribution of Statistics](figures/stats_subplots.png)
 
 ### Methods Section - Explain how you gathered and analyzed data.
 
 **Data Preparation**  
-Initial investigation revealed outliers in the direction of the maximum power readings. Houses with maximum readings in the top 5% (> 2 stds) were removed from the dataset. This resulted in the disqualification of 37 houses (2.3%). To avoid creating holes in the data, the entire house was removed, instead of a single house-interval data point.  
+Initial investigation revealed outliers with exceptionally large power readings. Houses with any power readings in the top 5% (> 2 stds) were removed from the dataset. This resulted in the disqualification of 37 houses (2.3%). To avoid creating holes in the data, the entire house was removed, instead of a single house-interval data point.  
 
-Prior to training, the data was normalized using the sk-learn StandardScaler. TODO: Discuss more about this normalization.
+TODO: Descriptive statistics after removing outliers
+
+Prior to training, the data was normalized using the sklearn.preprocessing.StandardScaler. Per scikit-learn documentation, StandardScaler will "standardize features by removing the mean and scaling to unit variance". Thus, for each feature the mean was set to 0 and the standard deviation to 1. The scaling operation was performed to all model input data, including training, validation and testing data sets. 
+
+https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html
+
 
 **Model Selection**  
-Both objectives can be addressed with binary classification models. After comparing several models, logistic regression was selected for both 
+Binary classifiers can address both objectives. After comparing several models, binary logistic regression was selected for both parts A and B. 
 
 
+> The dependent variable should be dichotomous in nature (e.g., presence vs. absent).
+There should be no outliers in the data, which can be assessed by converting the continuous predictors to standardized scores, and removing values below -3.29 or greater than 3.29.
+There should be no high correlations (multicollinearity) among the predictors.  This can be assessed by a correlation matrix among the predictors. Tabachnick and Fidell (2013) suggest that as long correlation coefficients among independent variables are less than 0.90 the assumption is met.
 
 TODO: Compare different models 
 https://www.kaggle.com/klaudiajankowska/binary-classification-methods-comparison
@@ -66,8 +73,24 @@ Naive Bayes
 
 ### Analysis Section - Explain what you analyzed. Include any charts here.
 
-Precision Recall  
-ROC AUC  
+
+The Receiver Operating Characteristic (ROC) and Precision Recall (PR) curves were used to evaluate model performance. The ROC curve demonstrates the relationship between the decision threshold and the false positive rate (fpr). The ROC curve for a perfect model would give 100% specificity at any cutoff point ("Heaviside step function"). The area under curve (AUC) of the ROC curve is 1 for a perfectly accurate model and 0.5 for a useless model. Thus, a larger ROC-AUC indicates a more accurate model.  
+
+http://gim.unmc.edu/dxtests/roc3.htm 
+
+
+The PR curve indicates the relationship between the Precision and Recall rates and the threshold is varied. 
+
+https://classeval.wordpress.com/introduction/introduction-to-the-precision-recall-plot/ 
+
+> Precision is "how useful the search results are", the probability that a (randomly selected) retrieved document is relevant
+> Recall is "how complete the results are", the probability that a (randomly selected) relevant document is retrieved in a search
+
+Accuracy is not a meaningul statistic for imbalanced datasets. Balanced accuracy is a better measure, as it's normalized by the total number of positive and negative samples. 
+
+TPR - True Positive Rate
+TNR - True Negative Rate
+Balanced Accuracy = (TPR + TNR) / 2
 
 
 ### Results - Describe the results of your analysis.
