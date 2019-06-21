@@ -9,7 +9,7 @@ Increasing electric vehicle (EV) ownership presents new challenges for the energ
 
 
 Predictive modeling plays a critical role in optimizing supply, managing demand and coordinating consumption. Introducing a fleet of EV batteries effectively increases the grid's storage capacity. The ability to store energy creates separation between energy supply and demand, buffering against unexpected fluctuations. Properly managed, the decentralization of energy storage may improve overall energy market stability. Maximizing EV charging during low-demand times and minimizing during high demand times would promote smoothing. Furthermore, EV batteris may enable more efficient use of "clean" energy sources which are transient and don't necessarily align with the current demand cycles. The ability to predict when and where EVs are plugging in is critical to optimizing the energy grid for both environmental impact and consumer demand.
-÷'/
+
 
 ### Problem Description
 The training set contains two months of smart meter power readings from 1590 houses. The readings were taken at half-hour intervals. Some of the homes have electric vehicles and some do not. The file "EV_train_labels.csv" indicates the time intervals on which an electric vehicle was charging (1 indicates a vehicle was charging at some point during the interval and 0 indicates no vehicle was charging at any point during the interval). Can you determine:  
@@ -27,7 +27,8 @@ A solution to part B might consist of a prediction of the probability that an el
 
 # Body
 
-### Data Section - Include written descriptions of data and follow with relevant spreadsheets.
+### Data Profiling  
+
 The training data contains 60 days of power readings for 1590 houses. Of the 1590 houses, 30.5% or 485 houses, charged an EV at least once during the 60-day window.  
 
 The training data has an imbalanced distribution between classes. After removing outliers, 2.4% of all power readings occurred during EV charging. This increased to 7.7% when only considering the power readings from households with EVs. In both cases, the proportion of EV charging events is significantly lower that the non-EV charging events. This imbalance likely mimics realistic data. Therefore, the model's bias may not be concerning. The imbalance could be reduced or eliminated by removing power readings from the non-EV class. I chose not to balance the data because (1) I wanted the training data to mimic a realistic data distribution and (2) it would significantly reducing the size of the training data set. 
@@ -65,6 +66,8 @@ Naive Bayes
 
 ### Analysis Section - Explain what you analyzed. Include any charts here.
 
+Precision Recall  
+ROC AUC  
 
 
 ### Results - Describe the results of your analysis.
