@@ -26,7 +26,7 @@ A solution to part B might consist of a prediction of the probability that an el
 
 # Body
 
-### Data Profiling  
+## Data Profiling  
 
 The training data contains 60 days of power readings for 1590 houses. Of the 1590 houses, 30.5% or 485 houses, charged an EV during at least one interval in the time period. 
 
@@ -37,49 +37,40 @@ TODO: Insert figure summarizing imbalanced data
 ![Total Charges](figures/dist_total_charges.png)
 ![Distribution of Statistics](figures/stats_subplots.png)
 
-### Methods Section - Explain how you gathered and analyzed data.
+## Methods Section - Explain how you gathered and analyzed data.
 
-**Data Preparation**  
+### Data Preparation  
 Initial investigation revealed outliers with exceptionally large power readings. Houses with any power readings in the top 5% (> 2 stds) were removed from the dataset. This resulted in the disqualification of 37 houses (2.3%). To avoid creating holes in the data, the entire house was removed, instead of a single house-interval data point.  
 
 TODO: Descriptive statistics after removing outliers
 
 Prior to training, the data was normalized using the sklearn.preprocessing.StandardScaler. Per scikit-learn documentation, StandardScaler will "standardize features by removing the mean and scaling to unit variance". Thus, for each feature the mean was set to 0 and the standard deviation to 1. The scaling operation was performed to all model input data, including training, validation and testing data sets. 
 
-https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html
+### Feature Selection  
+Pearson's Correlation Coefficient was used to select appropriate features. This correlation model tests for the linear correlation between a pair of features. Uncorrelated features have a coefficient near 0, while perfectly correlated features have a coefficient of +/-1. 
 
-
-**Model Selection**  
+### Model Selection  
 Binary classifiers can address both objectives. After comparing several models, binary logistic regression was selected for both parts A and B. 
 
+Five models were tested using their default configurations: Logistic Regression (LR), Linear Support Vector Classification (SVM), Multi-layer Perceptron (MLP) classifier, K-Nearest Neighbors (KNN) and a random forest classfier (RF). Training data was split into train and test subsets once and used for training and testing all models. Models were evaluated using their respective score() methods. 
 
-> The dependent variable should be dichotomous in nature (e.g., presence vs. absent).
-There should be no outliers in the data, which can be assessed by converting the continuous predictors to standardized scores, and removing values below -3.29 or greater than 3.29.
-There should be no high correlations (multicollinearity) among the predictors.  This can be assessed by a correlation matrix among the predictors. Tabachnick and Fidell (2013) suggest that as long correlation coefficients among independent variables are less than 0.90 the assumption is met.
+#### Part A  
+When tested with default parameters, accuracy scores ranged from 0.807 to 0.866. Of the models, the MLP classifier gave the highest accuracy, LR and SVM performed similarly, followed by KNN and finally the RF classifier gave the worst accuracy. Logistic regression was selected as the model for part A because it yielded reasonable performance with relative simplicity. 
 
-TODO: Compare different models 
-https://www.kaggle.com/klaudiajankowska/binary-classification-methods-comparison
-Logistic Regression
-Decision Tree
-Support Vector Machine
-Linear Discriminant Analysis
-Quadratic Discriminant Analysis
-Random Forest
-K-Nearest Neighbors
-Naive Bayes
+#### Part B  
+TODO: Repeat model test for part b
 
-**Classification Chain**  
+TODO: Table with accuracies
 
 
 ### Analysis Section - Explain what you analyzed. Include any charts here.
-
 
 The Receiver Operating Characteristic (ROC) and Precision Recall (PR) curves were used to evaluate model performance. The ROC curve demonstrates the relationship between the decision threshold and the false positive rate (fpr). The ROC curve for a perfect model would give 100% specificity at any cutoff point ("Heaviside step function"). The area under curve (AUC) of the ROC curve is 1 for a perfectly accurate model and 0.5 for a useless model. Thus, a larger ROC-AUC indicates a more accurate model.  
 
 http://gim.unmc.edu/dxtests/roc3.htm 
 
 
-The PR curve indicates the relationship between the Precision and Recall rates and the threshold is varied. 
+The PR curve indicates the relationship between the Precision and Recall rates as the threshold is varied. 
 
 https://classeval.wordpress.com/introduction/introduction-to-the-precision-recall-plot/ 
 
@@ -93,7 +84,15 @@ TNR - True Negative Rate
 Balanced Accuracy = (TPR + TNR) / 2
 
 
-### Results - Describe the results of your analysis.
+#### Part A, Logistic Regression Model  
+ROC, PR Curve   
+Converting the intercept and coefficients (logodds) into probabilities reveals the model's bias and the relative feature contributions. The intercept logodds converts to a probability of 0.200, indicating that the model is biased towards predicting False, the household does not have an EV. Additionally, the most impactful features are the 'Maximum Difference', 'Maximum Power Reading' and the 'Minimum Power Reading ^2'. 
+
+#### Part B,   
+
+
+
+### Results - Describe the results of your analysis.   
 
 
 

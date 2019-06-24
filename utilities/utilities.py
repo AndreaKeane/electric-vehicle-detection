@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
@@ -108,6 +109,29 @@ def pickle_raw_data():
 	test.to_pickle(pickle_path / "test.pkl")
 	train.to_pickle(pickle_path / "train.pkl")
 	labels.to_pickle(pickle_path / "labels.pkl")
+
+def pickle_house_classes():
+	'''Pickles lists segregating the houses with and without EVs'''
+	# Path Setup
+	pickle_path = Path('/Users/andreakeane/Documents/DataScience/GridCure_Problems/pickles/')
+	labels = pd.read_pickle(pickle_path / "labels.pkl")
+
+	## Determine houses with and without EVs
+	temp = pd.DataFrame(index=labels.index)
+	temp['sum'] = labels.sum(axis=1)
+	temp['bool'] = np.where(temp['sum'] > 0, True, False)
+
+	houses_wEV = temp.index[temp['bool'] == True].tolist()
+	houses_woEV = temp.index[temp['bool'] == False].tolist()
+
+	print("{} Houses with EVs.".format(len(houses_wEV)))
+	print("{} Houses without EVs.".format(len(houses_woEV)))
+
+	# Pickle the data for reference elsewhere
+	# Lists, so we can't use Pandas pickling method
+	make_pickle(houses_wEV, pickle_path / "houses_wEV.pkl")
+	make_pickle(houses_woEV, pickle_path / "houses_woEV.pkl")
+
 
 def make_pickle(cucumber, pickle_jar):
 	'''
