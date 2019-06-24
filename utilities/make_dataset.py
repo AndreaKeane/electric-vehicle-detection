@@ -1,14 +1,8 @@
 #!/usr/bin/python3
 import numpy as np
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn import metrics
-from sklearn.model_selection import train_test_split 
-from pathlib import Path
 import pandas as pd
-import pickle
+from pathlib import Path
 import utilities as utils
-
 
 def pickle_raw_data():
 	'''Pickles raw EV_files data as Pandas dataframes.'''

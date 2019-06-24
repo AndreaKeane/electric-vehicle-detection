@@ -1,8 +1,6 @@
 #!/usr/bin/python3
-import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
-from sklearn import metrics
 from sklearn.model_selection import train_test_split 
 from pathlib import Path
 import pandas as pd
@@ -44,7 +42,6 @@ def scale_split_data(X, y):
 	X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, random_state=0)
 
 	return X_train, X_test, y_train, y_test
-
 
 
 def logreg_model(X, y):
@@ -98,6 +95,7 @@ def make_pickle(cucumber, pickle_jar):
 	with open(pickle_jar, 'wb') as pkl:
 		pickle.dump(cucumber, pkl, -1)
 
+
 def get_pickle(pickle_jar):
 	'''
 	Retrieves pickled non-Pandas objects
@@ -107,5 +105,6 @@ def get_pickle(pickle_jar):
 		return pickle.load(pkl)
 
 
-
-
+if __name__ == "__main__": 
+	print("This script is not intended to be a standalone executable.")
+	sys.exit()

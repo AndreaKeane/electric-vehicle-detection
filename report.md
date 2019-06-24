@@ -6,7 +6,6 @@
 ### Background
 Increasing electric vehicle (EV) ownership presents new challenges for the energy grid. Potential impacts include infrastructure failure, unstable electricity streams and power outages. Highest risk areas are those whose peak demands are already approaching maximum capacity. Fortunately, the steadily increasing adoption of EVs provides an opportunity to proactively address problems and optimize solutions. With XXXXX and emerging technologies, EV growth delivers an opportunity to improve our energy infrastructure.  
 
-
 Predictive modeling plays a critical role in optimizing supply, managing demand and coordinating consumption. Introducing a fleet of EV batteries effectively increases the grid's storage capacity. The ability to store energy creates separation between energy supply and demand, buffering against unexpected fluctuations. Properly managed, the decentralization of energy storage may improve overall energy market stability. Maximizing EV charging during low-demand times and minimizing during high demand times would promote smoothing. Furthermore, EV batteris may enable more efficient use of "clean" energy sources which are transient and don't necessarily align with the current demand cycles. The ability to predict when and where EVs are plugging in is critical to optimizing the energy grid for both environmental impact and consumer demand.
 
 
@@ -21,7 +20,7 @@ A solution to part B might consist of a prediction of the probability that an el
 
 
 
-# Body
+# Project Details  
 
 ## Data Profiling  
 
@@ -36,7 +35,7 @@ TODO: Insert figure summarizing imbalanced data
 
 ## Methods
 ### Data Preparation  
-Initial investigation revealed outliers with exceptionally large power readings. Houses with any power readings in the top 5% (> 2 stds) were removed from the dataset. This resulted in the disqualification of 37 houses (2.3%). To avoid creating holes in the data, the entire house was removed, instead of a single house-interval data point.  
+Initial investigation revealed outliers with exceptionally large power readings. To account for this, houses with any power readings in the top 5% (> 2 stds) were removed from the dataset. This resulted in the disqualification of 37 houses (2.3%). To avoid creating holes in the data, the entire house was removed, instead of a single house-interval data point.  
 
 TODO: Descriptive statistics after removing outliers
 
