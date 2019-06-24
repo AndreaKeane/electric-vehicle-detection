@@ -21,9 +21,6 @@ A solution to part B might consist of a prediction of the probability that an el
 
 
 
-
-
-
 # Body
 
 ## Data Profiling  
@@ -37,30 +34,41 @@ TODO: Insert figure summarizing imbalanced data
 ![Total Charges](figures/dist_total_charges.png)
 ![Distribution of Statistics](figures/stats_subplots.png)
 
-## Methods Section - Explain how you gathered and analyzed data.
-
+## Methods
 ### Data Preparation  
 Initial investigation revealed outliers with exceptionally large power readings. Houses with any power readings in the top 5% (> 2 stds) were removed from the dataset. This resulted in the disqualification of 37 houses (2.3%). To avoid creating holes in the data, the entire house was removed, instead of a single house-interval data point.  
 
 TODO: Descriptive statistics after removing outliers
 
-Prior to training, the data was normalized using the sklearn.preprocessing.StandardScaler. Per scikit-learn documentation, StandardScaler will "standardize features by removing the mean and scaling to unit variance". Thus, for each feature the mean was set to 0 and the standard deviation to 1. The scaling operation was performed to all model input data, including training, validation and testing data sets. 
+The data was normalized using the sklearn.preprocessing.StandardScaler. Per scikit-learn documentation, StandardScaler will "standardize features by removing the mean and scaling to unit variance". Thus, for each feature the mean was set to 0 and the standard deviation to 1. The scaling operation was performed to all model input data, including training, validation and testing data sets.
 
-### Feature Selection  
+### Feature Engineering
 Pearson's Correlation Coefficient was used to select appropriate features. This correlation model tests for the linear correlation between a pair of features. Uncorrelated features have a coefficient near 0, while perfectly correlated features have a coefficient of +/-1. 
 
-### Model Selection  
-Binary classifiers can address both objectives. After comparing several models, binary logistic regression was selected for both parts A and B. 
+#### Part A  
+Initially, a logistic regression model was trained with each interval in the 60-day window as a separate input variable. However, this approach presented several drawbacks. Firstly, a prediction for a given household couldn't be made without at least 60-days worth of data. In a production environment, where new data may be arriving consistently, this seems like a significant setback. Secondly, using 2880 input variables with similar information creates a complex model with limited analysis potential. Finally, logistic regression expects uncorrelated variables, and is restricted to linear relationships between the independent variables. To address these concerns, new features that are normalized with respect to time and intended to capture trending were engineered. Visually inspecting the time-dependent behavior of several houses with and without EVs revealed that houses with EV's had spikes in power readings of a larger magnitude. Therefore, the developed features aimed to capture this behavior by defining a "baseline" for each household as well as summarizing the spike behavior.
 
-Five models were tested using their default configurations: Logistic Regression (LR), Linear Support Vector Classification (SVM), Multi-layer Perceptron (MLP) classifier, K-Nearest Neighbors (KNN) and a random forest classfier (RF). Training data was split into train and test subsets once and used for training and testing all models. Models were evaluated using their respective score() methods. 
+TODO: Feature engineering plots
+
+
+#### Part B  
+For part B, each interval requires a prediction. This objective does not lend itself to utilizing multiple intervals as independent variables. Therefore, new features were engineered to provide additional information - beyond a singular power reading - to the model(s). Building off of the trends observed by visual inspection, the engineered variables were designed to capture both a baseline behavior and characterize EV charging events as deviations from the baseline. 
+
+
+### Model Selection  
+Both parts A and B of the problem can be addressed with Binary Classification. To do this, the questions are reframed as the following:  
+A. Given historical power readings, does this house have an EV?  
+B. For a given interval at a known household, was an EV charging?  
+
+Five binary classifiers were tested for each question above using their default configurations: Logistic Regression (LR), Linear Support Vector Classification (SVM), Multi-layer Perceptron (MLP) classifier, K-Nearest Neighbors (KNN) and a random forest classfier (RF). Models were evaluated using their respective score() methods. 
 
 #### Part A  
 When tested with default parameters, accuracy scores ranged from 0.807 to 0.866. Of the models, the MLP classifier gave the highest accuracy, LR and SVM performed similarly, followed by KNN and finally the RF classifier gave the worst accuracy. Logistic regression was selected as the model for part A because it yielded reasonable performance with relative simplicity. 
 
 #### Part B  
-TODO: Repeat model test for part b
 
-TODO: Table with accuracies
+TODO: Repeat model test for part b
+TODO: Tables with accuracies
 
 
 ### Analysis Section - Explain what you analyzed. Include any charts here.
