@@ -87,13 +87,13 @@ Five binary classifiers were tested for each question above using their default 
 #### Part A  
 When tested with default parameters, accuracy scores ranged from 0.807 to 0.866. Of the models, the MLP classifier gave the highest accuracy, LR and SVM performed similarly, followed by KNN and finally the RF classifier gave the worst accuracy. Logistic regression was selected as the model for part A because it yielded reasonable performance with relative simplicity. 
 
-| Model                     | Score |
-|---------------------------|-------|
-| Logistic Regression Score | 0.843 |
-| SVM Score                 | 0.843 |
-| Neural Network Score      | 0.866 |
-| Random Forest Score       | 0.807 |
-| K-Nearest Neighbors Score | 0.835 |
+| Model               | Score |
+|---------------------|-------|
+| Logistic Regression | 0.843 |
+| SVM                 | 0.843 |
+| Neural Network      | 0.866 |
+| Random Forest       | 0.807 |
+| K-Nearest Neighbors | 0.835 |
 
 
 
@@ -101,7 +101,14 @@ When tested with default parameters, accuracy scores ranged from 0.807 to 0.866.
 
 TODO: Repeat model test for part b
 
-TODO: Tables with accuracies
+
+| Model               | Score |
+|---------------------|-------|
+| Logistic Regression | 0.946 |
+| SVM                 | 0.945 |
+| Neural Network      | 0.957 |
+| Random Forest       | 0.960 |
+| K-Nearest Neighbors | 0.959 |
 
 
 ### Analysis Section - Explain what you analyzed. Include any charts here.
@@ -128,8 +135,6 @@ Balanced Accuracy = (TPR + TNR) / 2
 #### Part A, Logistic Regression Model  
 ROC, PR Curve   
 Converting the intercept and coefficients (logodds) into probabilities reveals the model's bias and the relative feature contributions. The intercept logodds converts to a probability of 0.200, indicating that the model is biased towards predicting False, the household does not have an EV. Additionally, the most impactful features are the 'Maximum Difference', 'Maximum Power Reading' and the 'Minimum Power Reading ^2'. 
-
-![ROC PR Curves](figures/a_roc_pr.png)
 
 ![Coefficients](figures/a_coef_heatmap.png)
 <img src="https://github.com/AndreaKeane/electric-vehicle-detection/blob/master/figures/a_coef_heatmap.png" width="200">
