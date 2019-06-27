@@ -75,6 +75,7 @@ For part B, each interval requires a prediction. This objective does not lend it
 
 TODO: Feature engineering plots
 
+
 ### Model Selection  
 Both parts A and B of the problem can be addressed with Binary Classification. To do this, the questions are reframed as the following:  
 A. Given historical power readings, does this house have an EV?  
@@ -136,7 +137,6 @@ Balanced Accuracy = (TPR + TNR) / 2
 ROC, PR Curve   
 Converting the intercept and coefficients (logodds) into probabilities reveals the model's bias and the relative feature contributions. The intercept logodds converts to a probability of 0.200, indicating that the model is biased towards predicting False, the household does not have an EV. Additionally, the most impactful features are the 'Maximum Difference', 'Maximum Power Reading' and the 'Minimum Power Reading ^2'. 
 
-![Coefficients](figures/a_coef_heatmap.png)
 <img src="https://github.com/AndreaKeane/electric-vehicle-detection/blob/master/figures/a_coef_heatmap.png" width="200">
 
 #### Part B,   
