@@ -28,8 +28,10 @@ The training data contains 60 days of power readings for 1590 houses. Of the 159
 
 The training data has an imbalanced class distribution. After removing outliers, 2.4% of all power readings occurred during EV charging. This increased to 7.7% when only considering the power readings from households with EVs. In both cases, the proportion of EV charging events is significantly lower that the non-EV charging events. The imbalance could be reduced or eliminated by removing power readings from the non-EV class. I chose not to balance the data because (1) I wanted the training data to mimic a realistic data distribution and (2) it would significantly reducing the size of the training data set. As a result, the models developed are biased towards non-EV charging events. 
 
-![Class Imbalance](figures/profile_0.png)
-<img src="https://github.com/AndreaKeane/electric-vehicle-detection/blob/master/figures/profile_1.png" width="300">
+![Class Imbalance] <img src="https://github.com/AndreaKeane/electric-vehicle-detection/blob/master/figures/profile_0.png" width="450">
+
+![Charging Interval Distribution] <img src="https://github.com/AndreaKeane/electric-vehicle-detection/blob/master/figures/profile_1.png" width="300">
+
 ![Descriptive Statistic Distribution](figures/profile_2.png)
 
 ## Methods
@@ -61,12 +63,13 @@ Data was normalized using the sklearn.preprocessing.StandardScaler. Per scikit-l
 ### Feature Engineering
 Pearson's Correlation Coefficient was used to select appropriate features. This correlation model tests for the linear correlation between a pair of features. Uncorrelated features have a coefficient near 0, while perfectly correlated features have a coefficient of +/-1. 
 
+![Sample Energy Signature](figures/profile_3.png)
+
 #### Part A  
 Initially, a logistic regression model was trained with each interval in the 60-day window as a separate input variable. However, this approach presented several drawbacks. Firstly, a prediction for a given household couldn't be made without at least 60-days (2880 consecutive intervals) of data. In a production environment, where new data may be arriving consistently, this seems like a significant setback. Secondly, using 2880 input variables with similar information creates a complex model with limited analysis potential. Finally, logistic regression expects uncorrelated variables, and is restricted to linear relationships between the independent variables. To address these concerns, new features that are normalized with respect to time and intended to capture trending were engineered. Visually inspecting the time-dependent behavior of several houses with and without EVs revealed that houses with EV's had spikes in power readings of a larger magnitude. Therefore, the developed features aimed to capture this behavior by defining a "baseline" for each household as well as summarizing the spike behavior.
 
-![Sample Energy Signature](figures/profile_3.png)
 
-TODO: Feature engineering plots
+![Sample Energy Signature](figures/a_feature_heatmap.png)
 
 
 #### Part B  
@@ -79,14 +82,20 @@ Both parts A and B of the problem can be addressed with Binary Classification. T
 A. Given historical power readings, does this house have an EV?  
 B. For a given interval at a known household, was an EV charging?  
 
-TODO: Figure showing data flow from A to B. 
+![Descriptive Statistic Distribution](figures/classifier_chain.png)
 
-Five binary classifiers were tested for each question above using their default configurations: Logistic Regression (LR), Linear Support Vector Classification (SVM), Multi-layer Perceptron (MLP) classifier, K-Nearest Neighbors (KNN) and a random forest classfier (RF). Models were evaluated using their respective score() methods. 
+Five binary classifiers were tested for each question above using their default configurations: Logistic Regression (LR), Linear Support Vector Classification (SVM), Multi-layer Perceptron (MLP) classifier, K-Nearest Neighbors (KNN) and a random forest classfier (RF). Models were evaluated using their respective score() methods.  
 
 #### Part A  
 When tested with default parameters, accuracy scores ranged from 0.807 to 0.866. Of the models, the MLP classifier gave the highest accuracy, LR and SVM performed similarly, followed by KNN and finally the RF classifier gave the worst accuracy. Logistic regression was selected as the model for part A because it yielded reasonable performance with relative simplicity. 
 
-TODO: Tables with accuracies
+| Model                     | Score |
+|---------------------------|-------|
+| Logistic Regression Score | 0.843 |
+| SVM Score                 | 0.843 |
+| Neural Network Score      | 0.866 |
+| Random Forest Score       | 0.807 |
+| K-Nearest Neighbors Score | 0.835 |
 
 #### Part B  
 
@@ -109,16 +118,20 @@ https://classeval.wordpress.com/introduction/introduction-to-the-precision-recal
 > Precision is "how useful the search results are", the probability that a (randomly selected) retrieved document is relevant
 > Recall is "how complete the results are", the probability that a (randomly selected) relevant document is retrieved in a search
 
-Accuracy is not a meaningul statistic for imbalanced datasets. Balanced accuracy is a better measure, as it's normalized by the total number of positive and negative samples. 
+Accuracy is not a meaningful statistic for imbalanced datasets. Balanced accuracy is a better measure, as it's normalized by the total number of positive and negative samples. 
 
-TPR - True Positive Rate
-TNR - True Negative Rate
+TPR - True Positive Rate  
+TNR - True Negative Rate  
 Balanced Accuracy = (TPR + TNR) / 2
 
 
 #### Part A, Logistic Regression Model  
 ROC, PR Curve   
 Converting the intercept and coefficients (logodds) into probabilities reveals the model's bias and the relative feature contributions. The intercept logodds converts to a probability of 0.200, indicating that the model is biased towards predicting False, the household does not have an EV. Additionally, the most impactful features are the 'Maximum Difference', 'Maximum Power Reading' and the 'Minimum Power Reading ^2'. 
+
+![ROC PR Curves](figures/a_roc_pr.png)
+
+![Coefficients](figures/a_coef_heatmap.png)
 
 #### Part B,   
 
