@@ -29,7 +29,8 @@ The training data contains 60 days of power readings for 1590 houses. Of the 159
 The training data has an imbalanced class distribution. After removing outliers, 2.4% of all power readings occurred during EV charging. This increased to 7.7% when only considering the power readings from households with EVs. In both cases, the proportion of EV charging events is significantly lower that the non-EV charging events. The imbalance could be reduced or eliminated by removing power readings from the non-EV class. I chose not to balance the data because (1) I wanted the training data to mimic a realistic data distribution and (2) it would significantly reducing the size of the training data set. As a result, the models developed are biased towards non-EV charging events. 
 
 ![Class Imbalance](figures/profile_0.png)
-![Total Charges Distribution](figures/profile_1.png)
+![Total Charges Distribution](figures/profile_1.png width="48")
+<img src="https://github.com/AndreaKeane/electric-vehicle-detection/blob/master/figures/profile_1.png" width="48">
 ![Descriptive Statistic Distribution](figures/profile_2.png)
 ![Sample Energy Signature](figures/profile_3.png)
 
@@ -37,7 +38,8 @@ The training data has an imbalanced class distribution. After removing outliers,
 ### Data Preparation  
 Initial investigation revealed outliers with exceptionally large power readings. To account for this, houses with any power readings in the top 5% (> 2 stds) were removed from the dataset. This resulted in the disqualification of 37 houses (2.3%). To avoid creating holes in the data, the entire house was removed, instead of a single house-interval data point.  
 
-Descriptive Statistics before Removing Outliers
+Descriptive Statistics before Removing Outliers  
+
 |       | Total Power | Average Power | Median Power | Min Power | Max Power | Total Charges |
 |-------|-------------|---------------|--------------|-----------|-----------|---------------|
 | mean  | 4031.3      | 1.4           | 1.1          | 0.3       | 5.7       | 67.2          |
@@ -46,7 +48,7 @@ Descriptive Statistics before Removing Outliers
 | 50%   | 2446.7      | 0.8           | 0.6          | 0.1       | 4.5       | 0.0           |
 | max   | 244527.1    | 84.9          | 75.8         | 50.9      | 163.1     | 685.0         |
 
-Descriptive Statistics After Removing Outliers
+Descriptive Statistics After Removing Outliers  
 
 |       | Total Power | Average Power | Median Power | Min Power | Max Power | Total Charges |
 |-------|-------------|---------------|--------------|-----------|-----------|---------------|
