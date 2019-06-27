@@ -73,7 +73,6 @@ Initially, a logistic regression model was trained with each interval in the 60-
 #### Part B  
 For part B, each interval requires a prediction. This objective does not lend itself to utilizing multiple intervals as independent variables. Therefore, new features were engineered to provide additional information - beyond a singular power reading - to the model(s). Building off of the trends observed by visual inspection, the engineered variables were designed to capture both a baseline behavior and characterize EV charging events as deviations from the baseline. 
 
-TODO: Feature engineering plots
 <img src="https://github.com/AndreaKeane/electric-vehicle-detection/blob/master/figures/b_feature_pairplot.png" width="600">
 
 
@@ -104,8 +103,6 @@ When tested with default parameters, accuracy scores ranged from 0.807 to 0.866.
 
 
 #### Part B  
-
-TODO: Repeat model test for part b
 
 
 | Model               | Score |
@@ -146,7 +143,7 @@ Converting the intercept and coefficients (logodds) into probabilities reveals t
 
 #### Part B,   
 
-<img src="https://github.com/AndreaKeane/electric-vehicle-detection/blob/master/figures/b_roc_pr.png" width="200">
+<img src="https://github.com/AndreaKeane/electric-vehicle-detection/blob/master/figures/b_roc_pr.png" width="600">
 
 ### Results - Describe the results of your analysis.   
 
