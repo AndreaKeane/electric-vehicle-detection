@@ -28,16 +28,33 @@ The training data contains 60 days of power readings for 1590 houses. Of the 159
 
 The training data has an imbalanced class distribution. After removing outliers, 2.4% of all power readings occurred during EV charging. This increased to 7.7% when only considering the power readings from households with EVs. In both cases, the proportion of EV charging events is significantly lower that the non-EV charging events. The imbalance could be reduced or eliminated by removing power readings from the non-EV class. I chose not to balance the data because (1) I wanted the training data to mimic a realistic data distribution and (2) it would significantly reducing the size of the training data set. As a result, the models developed are biased towards non-EV charging events. 
 
-TODO: Insert figure summarizing imbalanced data
-
-![Total Charges](figures/dist_total_charges.png)
-![Distribution of Statistics](figures/stats_subplots.png)
+![Class Imbalance](figures/profile_0.png)
+![Total Charges Distribution](figures/profile_1.png)
+![Descriptive Statistic Distribution](figures/profile_2.png)
+![Sample Energy Signature](figures/profile_3.png)
 
 ## Methods
 ### Data Preparation  
 Initial investigation revealed outliers with exceptionally large power readings. To account for this, houses with any power readings in the top 5% (> 2 stds) were removed from the dataset. This resulted in the disqualification of 37 houses (2.3%). To avoid creating holes in the data, the entire house was removed, instead of a single house-interval data point.  
 
-TODO: Descriptive statistics after removing outliers
+Descriptive Statistics before Removing Outliers
+|       | Total Power | Average Power | Median Power | Min Power | Max Power | Total Charges |
+|-------|-------------|---------------|--------------|-----------|-----------|---------------|
+| mean  | 4031.3      | 1.4           | 1.1          | 0.3       | 5.7       | 67.2          |
+| std   | 8921.2      | 3.1           | 2.8          | 1.6       | 7.1       | 115.7         |
+| min   | 814.8       | 0.3           | 0.0          | 0.0       | 0.6       | 0.0           |
+| 50%   | 2446.7      | 0.8           | 0.6          | 0.1       | 4.5       | 0.0           |
+| max   | 244527.1    | 84.9          | 75.8         | 50.9      | 163.1     | 685.0         |
+
+Descriptive Statistics After Removing Outliers
+
+|       | Total Power | Average Power | Median Power | Min Power | Max Power | Total Charges |
+|-------|-------------|---------------|--------------|-----------|-----------|---------------|
+| mean  | 3127.8      | 1.1           | 0.8          | 0.2       | 4.9       | 68.0          |
+| std   | 2526.9      | 0.9           | 0.8          | 0.4       | 2.6       | 116.3         |
+| min   | 814.8       | 0.3           | 0.0          | 0.0       | 0.6       | 0.0           |
+| 50%   | 2417.1      | 0.8           | 0.6          | 0.1       | 4.4       | 0.0           |
+| max   | 30073.7     | 10.4          | 11.3         | 5.2       | 19.6      | 685.0         |
 
 The data was normalized using the sklearn.preprocessing.StandardScaler. Per scikit-learn documentation, StandardScaler will "standardize features by removing the mean and scaling to unit variance". Thus, for each feature the mean was set to 0 and the standard deviation to 1. The scaling operation was performed to all model input data, including training, validation and testing data sets.
 
@@ -45,7 +62,9 @@ The data was normalized using the sklearn.preprocessing.StandardScaler. Per scik
 Pearson's Correlation Coefficient was used to select appropriate features. This correlation model tests for the linear correlation between a pair of features. Uncorrelated features have a coefficient near 0, while perfectly correlated features have a coefficient of +/-1. 
 
 #### Part A  
-Initially, a logistic regression model was trained with each interval in the 60-day window as a separate input variable. However, this approach presented several drawbacks. Firstly, a prediction for a given household couldn't be made without at least 60-days worth of data. In a production environment, where new data may be arriving consistently, this seems like a significant setback. Secondly, using 2880 input variables with similar information creates a complex model with limited analysis potential. Finally, logistic regression expects uncorrelated variables, and is restricted to linear relationships between the independent variables. To address these concerns, new features that are normalized with respect to time and intended to capture trending were engineered. Visually inspecting the time-dependent behavior of several houses with and without EVs revealed that houses with EV's had spikes in power readings of a larger magnitude. Therefore, the developed features aimed to capture this behavior by defining a "baseline" for each household as well as summarizing the spike behavior.
+Initially, a logistic regression model was trained with each interval in the 60-day window as a separate input variable. However, this approach presented several drawbacks. Firstly, a prediction for a given household couldn't be made without at least 60-days (2880 consecutive intervals) of data. In a production environment, where new data may be arriving consistently, this seems like a significant setback. Secondly, using 2880 input variables with similar information creates a complex model with limited analysis potential. Finally, logistic regression expects uncorrelated variables, and is restricted to linear relationships between the independent variables. To address these concerns, new features that are normalized with respect to time and intended to capture trending were engineered. Visually inspecting the time-dependent behavior of several houses with and without EVs revealed that houses with EV's had spikes in power readings of a larger magnitude. Therefore, the developed features aimed to capture this behavior by defining a "baseline" for each household as well as summarizing the spike behavior.
+
+TODO: figure demonstrating power spikes
 
 TODO: Feature engineering plots
 
@@ -53,20 +72,26 @@ TODO: Feature engineering plots
 #### Part B  
 For part B, each interval requires a prediction. This objective does not lend itself to utilizing multiple intervals as independent variables. Therefore, new features were engineered to provide additional information - beyond a singular power reading - to the model(s). Building off of the trends observed by visual inspection, the engineered variables were designed to capture both a baseline behavior and characterize EV charging events as deviations from the baseline. 
 
+TODO: Feature engineering plots
 
 ### Model Selection  
 Both parts A and B of the problem can be addressed with Binary Classification. To do this, the questions are reframed as the following:  
 A. Given historical power readings, does this house have an EV?  
 B. For a given interval at a known household, was an EV charging?  
 
+TODO: Figure showing data flow from A to B. 
+
 Five binary classifiers were tested for each question above using their default configurations: Logistic Regression (LR), Linear Support Vector Classification (SVM), Multi-layer Perceptron (MLP) classifier, K-Nearest Neighbors (KNN) and a random forest classfier (RF). Models were evaluated using their respective score() methods. 
 
 #### Part A  
 When tested with default parameters, accuracy scores ranged from 0.807 to 0.866. Of the models, the MLP classifier gave the highest accuracy, LR and SVM performed similarly, followed by KNN and finally the RF classifier gave the worst accuracy. Logistic regression was selected as the model for part A because it yielded reasonable performance with relative simplicity. 
 
+TODO: Tables with accuracies
+
 #### Part B  
 
 TODO: Repeat model test for part b
+
 TODO: Tables with accuracies
 
 
