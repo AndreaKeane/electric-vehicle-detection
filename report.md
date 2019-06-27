@@ -143,10 +143,11 @@ Converting the intercept and coefficients (logodds) into probabilities reveals t
 
 #### Part B,   
 
+TODO: Tune Logistic regression and KNN
+
 <img src="https://github.com/AndreaKeane/electric-vehicle-detection/blob/master/figures/b_roc_pr.png" width="600">
 
 ### Results - Describe the results of your analysis.   
-
 
 
 
