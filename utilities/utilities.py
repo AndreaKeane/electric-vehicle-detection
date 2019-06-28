@@ -8,7 +8,10 @@ import pickle
 
 
 def generate_test_results(X_test, y_test, model):
-	'''Joins X_test, y_test, y_pred and confusion results.'''
+	'''
+	Joins X_test, y_test, y_pred and confusion results.
+	Requires model to have `predict` and `predict_proba` methods 
+	'''
 	results = X_test.join(y_test.rename('label_true'))
 
 	# Predict bool classification
