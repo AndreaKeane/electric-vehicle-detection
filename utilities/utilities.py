@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+import matplotlib.pyplot as plt 
+import numpy as np
+import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split 
@@ -7,29 +10,97 @@ import pandas as pd
 import pickle
 
 
-def generate_test_results(X_test, y_test, model):
+def logreg_evaluation(model, X_train, fig_label, fig_path):
 	'''
-	Joins X_test, y_test, y_pred and confusion results.
+
+	'''
+
+	# Evaluate Intercept
+	intercept = model.intercept_[0]
+	intercept_odds = np.exp(intercept)
+	intercept_prob = intercept_odds / (1 + intercept_odds)
+
+	print("INTERCEPT\n{:.1f}% probability of house having an EV".format(intercept_prob*100))
+
+	# Evaluate coefficients
+	analysis = pd.DataFrame(index=X_train.columns)
+	analysis['logodds'] = np.array(model.coef_[0])
+	analysis['odds'] = np.exp(analysis['logodds'])
+	analysis['probs'] = analysis.odds / (1 + analysis.odds)
+
+	# Display as heatmap
+	f, ax = plt.subplots(figsize=(2, 6))
+	sns.heatmap(analysis.drop(['logodds', 'odds'], axis=1), 
+				annot=True, robust=True, 
+				xticklabels=["Coefficient\nProbabilities"], 
+				linewidths=.5
+			)
+	f.savefig(fig_path / (fig_label + "_coef_heatmap.png"), 
+			dpi=400,  bbox_inches='tight')
+
+
+def model_evaluation(model, X_train, y_train, X_test, y_test, fig_label, fig_path):
+	'''
+	model - classifier object 
+	[train, test] data
+	fig_label - string descriptor to differentiate saved figs
+
 	Requires model to have `predict` and `predict_proba` methods 
 	'''
-	results = X_test.join(y_test.rename('label_true'))
+	from sklearn.metrics import roc_auc_score, roc_curve, precision_recall_curve, average_precision_score, balanced_accuracy_score
 
-	# Predict bool classification
-	y_pred = model.predict(X_test)
-	y_pred = pd.DataFrame(y_pred, 
-						index=X_test.index, 
-						columns=['label_pred'])
+	y_true = y_test
+	y_scores = model.predict(X_test)  
+	y_probs = model.predict_proba(X_test)[:,1]
 
-	# Probability for each testing classification
-	probs = model.predict_proba(X_test)[:,1]
-	probs = pd.DataFrame(probs, 
-						index=X_test.index, 
-						columns=['label_prob'])
+	# ROC
+	auc = roc_auc_score(y_true, y_probs)
+	print("ROC AUC Score: {:.3f}".format(auc))
+	fpr, tpr, thresholds_roc = roc_curve(y_true, y_probs)
 
-	results = results.join(y_pred)
-	results = results.join(probs)
-	
-	return results
+	# Precision-Recall (PR) Curve
+	ap = average_precision_score(y_true, y_probs)  
+	print("Average Precision Score: {:.3f}".format(ap))
+	p, r, thresholds_pr = precision_recall_curve(y_true, y_probs)
+
+	# Balanced Accuracy
+	balanced_acc = balanced_accuracy_score(y_true, y_scores)
+	print("Balanced Accuracy Score: {:.3f}".format(balanced_acc))
+
+	# Generate ROC Curve
+	sns.lineplot(x=fpr, y=tpr, markers='.')
+	sns.lineplot(x=[0,1], y=[0,1])
+	plt.legend(('ROC Curve', 'Random Boundary'), frameon=True) 
+	plt.xlabel('False Positive Rate')
+	plt.ylabel('True Positive Rate')
+	plt.title('Receiver Operating Characteristic (ROC) Curve')
+
+	plt.savefig(fig_path / (fig_label + "_ROC.png"), dpi=400)
+	plt.show()
+
+	# Generate PR Curve
+	t = np.append(thresholds_pr, 1) 
+	if p.shape[0] != r.shape[0] != thresholds.shape[0]: 
+		print("Error. Incorrect Shapes")
+		print(p.shape[0], r.shape[0], t.shape[0])
+
+	sns.lineplot(t, p) 
+	sns.lineplot(t, r)
+	plt.legend(('Precision', 'Recall'), frameon=True) 
+	plt.xlabel('Threshold') 
+	plt.ylabel('Proportion')
+	plt.title('Precision-Recall (PR) Curve')
+
+	plt.savefig(fig_path / (fig_label + "_PR.png"), dpi=400)
+	plt.show()
+
+	# Score Summary
+	# Prints as CSV for easy reformatting
+	print("Training Score, {:.3f}".format(model.score(X_train, y_train)))
+	print("Testing Score, {:.3f}".format(model.score(X_test, y_test)))
+	print("ROC AUC, {:.3f}".format(auc))
+	print("Average Precision Score, {:.3f}".format(ap))
+	print("Balanced Accuracy Score, {:.3f}".format(balanced_acc))
 
 
 def scale_split_data(X, y):
@@ -45,25 +116,6 @@ def scale_split_data(X, y):
 	X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, random_state=0)
 
 	return X_train, X_test, y_train, y_test
-
-
-def logreg_model(X, y):
-	'''Performs redundant logistic regression modelling'''
-
-	# Scale X-data between -1 and 1
-	scaler = StandardScaler().fit(X)                                    
-	X_scaled = scaler.transform(X)
-
-	# Split data into training and testing
-	X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, random_state=0)
-
-	# Train logistic regression model
-	logreg = LogisticRegression(solver='liblinear', random_state=0)
-	logreg.fit(X_train, y_train)
-	y_pred = logreg.predict(X_test)
-	print('Accuracy of classifier on test set: {:.3f}'.format(logreg.score(X_test, y_test)))
-
-	return logreg
 
 
 def classify_outliers(train_df):
@@ -111,3 +163,4 @@ def get_pickle(pickle_jar):
 if __name__ == "__main__": 
 	print("This script is not intended to be a standalone executable.")
 	sys.exit()
+
