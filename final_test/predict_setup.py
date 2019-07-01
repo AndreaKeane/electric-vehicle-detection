@@ -1,7 +1,4 @@
-#!/usr/bin/python3
-import matplotlib.pyplot as plt 
-import numpy as np
-import seaborn as sns
+#!/usr/bin/python3 
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from pathlib import Path
@@ -95,7 +92,10 @@ def b_features(raw_data):
 	return features
 
 def predict_a(test):
-	''' '''	
+	'''
+	Makes predictions using part A model
+	Returns: Indexed df with the True-False predictions
+	'''	
 
 	pickle_path = Path('/Users/andreakeane/Documents/DataScience/GridCure_Problems/pickles/')
 
@@ -117,7 +117,10 @@ def predict_a(test):
 	return df_out
 
 def predict_b(test):
-	''' '''
+	'''
+	Makes predictions using part B model
+	Returns: Indexed df with the True-False probabilities
+	'''
 	pickle_path = Path('/Users/andreakeane/Documents/DataScience/GridCure_Problems/pickles/')
 
 	# Open classifier, scaler
@@ -130,7 +133,7 @@ def predict_b(test):
 	
 	# Make predictions
 	b_probs = classifier.predict_proba(X_scaled)[:,1]
-	b_predicts = classifier.predict(X_scaled)
+	# b_predicts = classifier.predict(X_scaled)
 
 	# Convert to df
 	df_out = pd.DataFrame(data=b_probs, index=X_scaled.index)

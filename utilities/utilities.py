@@ -12,7 +12,7 @@ import pickle
 
 def logreg_evaluation(model, X_train, fig_label, fig_path):
 	'''
-
+	Performs evaluation specific to the LogisticRegression Model
 	'''
 
 	# Evaluate Intercept
@@ -144,6 +144,7 @@ def classify_outliers(train_df):
 	# Summary stats for each training sample
 	stats = pd.DataFrame(index=train_df.index)
 	stats['max'] = pd.DataFrame(train_df.max(axis=1))
+	
 	# NOTE: Reserving these for future use in outlier classification
 	# stats['sum'] = pd.DataFrame(train_df.sum(axis=1))
 	# stats['min'] = pd.DataFrame(train_df.min(axis=1))

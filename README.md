@@ -1,11 +1,9 @@
-# electric-vehicle-detection
-A little info about your project and/ or overview that explains what the project is about.
+# Electric Vehicle Detection  
 
-# Motivation
-A short description of the motivation behind the creation and maintenance of the project. This should explain why the project exists.
 
-# Screenshots
-Include logo/demo screenshot etc.
+Given a series of power readings for a house or set of houses, the fitted binary classifiers predict:  
+A. Does the house have an EV?   
+B. For a given time interval, was an EV charging?  
 
 # Project Details  
 ## Methods  
@@ -16,14 +14,10 @@ Include logo/demo screenshot etc.
 ## Technologies  
 * Python  
 * JupyterNotebooks 
-* Pandas, Numpy, scikit-learn, MotPlotLib  
+* Pandas, Numpy, scikit-learn
+* MatPlotLib.pyplot, Seaborn
 
-# Installation
-Provide step by step series of examples and explanations about how to get a development env running.
-
-# Tests
-Describe and show how to run the tests with code examples.
 
 # Credits
-Give proper credits. This could be a link to any repo which inspired you to build this project, any blogposts or links to people who contrbuted in this project.
+Raw data and original project requirements provided by GridCure.
 
