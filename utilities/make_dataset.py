@@ -50,7 +50,7 @@ def pickle_house_classes():
 
 if __name__ == "__main__": 
     pickle_raw_data()
-	pickle_house_classes()
+    pickle_house_classes()
 
 
 

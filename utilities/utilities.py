@@ -84,11 +84,23 @@ def model_evaluation(model, X_train, y_train, X_test, y_test, fig_label, fig_pat
 		print("Error. Incorrect Shapes")
 		print(p.shape[0], r.shape[0], t.shape[0])
 
+	# Plot option #1
 	sns.lineplot(t, p) 
 	sns.lineplot(t, r)
 	plt.legend(('Precision', 'Recall'), frameon=True) 
 	plt.xlabel('Threshold') 
 	plt.ylabel('Proportion')
+	plt.title('Precision-Recall (PR) Curve')
+	plt.show()
+
+	# Plot Option #2
+	min_p = min(p)
+	sns.lineplot(x=r, y=p)
+	# sns.lineplot(x=[0,1], y=[min_p,min_p])
+	plt.legend(('PR Curve'), frameon=True) 
+	plt.ylim(bottom=0)   
+	plt.xlabel('Recall') 
+	plt.ylabel('Precision')
 	plt.title('Precision-Recall (PR) Curve')
 
 	plt.savefig(fig_path / (fig_label + "_PR.png"), dpi=400)
@@ -103,8 +115,13 @@ def model_evaluation(model, X_train, y_train, X_test, y_test, fig_label, fig_pat
 	print("Balanced Accuracy Score, {:.3f}".format(balanced_acc))
 
 
-def scale_split_data(X, y):
-	'''Scale and split the data. Return split data'''
+def scale_split_data(X, y, scaler_label=None):
+	'''
+	Scale and split the data. 
+	Return split data.
+	scaler_label - String, saves scaler object with this label
+	'''
+	pickle_path = Path('/Users/andreakeane/Documents/DataScience/GridCure_Problems/pickles/')
 
 	# Scale X-data between -1 and 1
 	scaler = StandardScaler().fit(X)                                    
@@ -114,6 +131,10 @@ def scale_split_data(X, y):
 
 	# Split data into training and testing
 	X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, random_state=0)
+
+	# Pickle the Scaler so we can apply it on the test data
+	if scaler_label: 
+		make_pickle(scaler, pickle_path / (scaler_label + "_scaler.pkl"))
 
 	return X_train, X_test, y_train, y_test
 
