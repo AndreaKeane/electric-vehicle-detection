@@ -31,8 +31,6 @@ Project Status: Completed
 
 6. The report with full model development process and analysis is in [here](https://github.com/AndreaKeane/electric-vehicle-detection/blob/master/report.pdf)
 
-7. Final model predictions are [here]()
-
 # Credits
 Raw data and original project requirements provided by GridCure. Visit them [here](https://www.gridcure.com/)
 
