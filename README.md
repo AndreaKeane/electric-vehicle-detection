@@ -19,7 +19,7 @@ Project Status: Completed
 * Python  
 * JupyterNotebooks 
 * Pandas, Numpy, scikit-learn
-* MatPlotLib.pyplot, Seaborn
+* MatPlotLib.pyplot, Seaborn  
 
 ## Getting Started
 
@@ -34,7 +34,6 @@ Project Status: Completed
 5. Applying the model on a final test set and results are kept [here](https://github.com/AndreaKeane/electric-vehicle-detection/tree/master/final_test)
 
 6. The report with full model development process and analysis is in XXX. 
-
 
 # Credits
 Raw data and original project requirements provided by GridCure.
